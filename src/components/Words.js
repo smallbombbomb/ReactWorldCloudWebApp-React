@@ -3,6 +3,14 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
+const styles = theme => ({
+    fab: {
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px'
+    }
+});
+
 const databaseURL = "https://wordcloud-5f032.firebaseio.com/";
 
 class Words extends React.Component {
