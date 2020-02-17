@@ -55,7 +55,7 @@ class Words extends React.Component {
         }).then(data => {
             let nextState = this.state.words;
             nextState[data.name] = words;
-            this.setState({words: nextState});
+            this.setState({ words: nextState });
         });
     }
 
@@ -70,7 +70,7 @@ class Words extends React.Component {
         }).then(() => {
             let nextState = this.state.words;
             delete nextState[id];
-            this.setState({words: nextState});
+            this.setState({ words: nextState });
         })
     }
 
@@ -142,8 +142,8 @@ class Words extends React.Component {
                 <Dialog open={this.state.dialog} onClose={this.handleDialogToggle}>
                     <DialogTitle>단어 추가</DialogTitle>
                     <DialogContent>
-                        <TextField label="단어" type="text" name ="word" value={this.state.word} onChange={this.handleValueChange}/><br/>
-                        <TextField label="가중치" type="number" name ="weight" value={this.state.weight} onChange={this.handleValueChange}/><br/>
+                        <TextField label="단어" type="text" name="word" value={this.state.word} onChange={this.handleValueChange} /><br />
+                        <TextField label="가중치" type="number" name="weight" value={this.state.weight} onChange={this.handleValueChange} /><br />
                     </DialogContent>
                     <DialogActions>
                         <Button variant="contained" color="primary" onClick={this.handleSubmit}>추가</Button>
