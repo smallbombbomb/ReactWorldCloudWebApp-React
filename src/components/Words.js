@@ -128,7 +128,7 @@ class Words extends React.Component {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6}>
-                                            <Button variant="contained" color="primary">삭제</Button>
+                                            <Button variant="contained" color="primary" onClick={() => this.handDelete(id)}>삭제</Button>
                                         </Grid>
                                     </Grid>
                                 </CardContent>
