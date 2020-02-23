@@ -8,6 +8,13 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 const styles = theme => ({
     hidden: {
@@ -87,6 +94,28 @@ class Texts extends React.Component {
         textName: ''
     })
 
+    handleValueChange = (e) => {
+        let nextState = {};
+        nextState[e.target.name] = e.target.value;
+        this.setState(nextState);
+    }
+
+    handleSubmit = () => {
+        const text = {
+            textName: this.state.textName,
+            textContent: this.state.fileContent
+        }
+        this.handleDialogToogle();
+        if(!text.textName || !text.textContent){
+            return;
+        }
+        this._post(text);
+    }
+
+    handleDelete = (id) => {
+        this._delete(id);
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -100,15 +129,36 @@ class Texts extends React.Component {
                                     내용: {text.textContent.substring(0, 24) + '...'}
                                 </Typography>
                                 <Grid container>
-                                    
+                                    <Grid item xs={6}>
+                                        <Typography variant="h5" component="h2">
+                                            {text.textName.substring(0, 14) + '...'}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Typography variant="h5" component="h2">
+                                            <Link component={RouterLink} to={"detail/" + id}>
+                                                <Button variant="contained" color="primary">보기</Button>
+                                            </Link>
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <Button variant="contained" color="primary" onClick={() => this.handleDelete(id)}>삭제</Button>
+                                    </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
-                        
                     );
                 })}
+                <Fab color="primary" className={classes.fab} onClick={this.handleDialogToogle}>
+                    <AddIcon />
+                </Fab>
+                <Dialog open={this.state.dialog} onClose={this.handleDialogToogle}>
+                    <DialogTitle>텍스트 추가</DialogTitle>
+                    <DialogContent>
+                    <TextField label="텍스트 이름" type="text" name="textName" value={this.state.textName} onChange={this.handleValueChange} /><br /><br />
+                    </DialogContent>
+                </Dialog>
             </div>
-            
         );
     }
 }
