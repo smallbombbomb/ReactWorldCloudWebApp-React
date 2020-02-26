@@ -51,12 +51,12 @@ class Texts extends React.Component {
         }).then(texts => this.setState({ texts: (texts == null) ? {} : texts }));
     }
 
-    _post(text){
+    _post(text) {
         return fetch(`${databaseURL}/texts.json`, {
             method: 'POST',
             body: JSON.stringify(text)
         }).then(res => {
-            if(res.status != 200) {
+            if (res.status != 200) {
                 throw new Error(res.statusText);
             }
             return res.json();
@@ -64,7 +64,7 @@ class Texts extends React.Component {
             //SWAP 작업
             let nextState = this.state.texts;
             nextState[data.name] = text;
-            this.setState({texts: nextState});
+            this.setState({ texts: nextState });
         });
     }
 
@@ -72,21 +72,21 @@ class Texts extends React.Component {
         return fetch(`${databaseURL}/texts/${id}.json`, {
             method: 'DELETE'
         }).then(res => {
-            if(res.status != 200){
+            if (res.status != 200) {
                 throw new Error(res.statusText);
             }
             return res.json();
         }).then(() => {
             let nextState = this.state.texts;
             delete nextState[id];
-            this.setState({texts: nextState});
+            this.setState({ texts: nextState });
         });
     }
 
     componentDidMount() {
         this._get();
     }
-    
+
     handleDialogToogle = () => this.setState({
         dialog: !this.state.dialog,
         fileName: '',
@@ -106,7 +106,7 @@ class Texts extends React.Component {
             textContent: this.state.fileContent
         }
         this.handleDialogToogle();
-        if(!text.textName || !text.textContent){
+        if (!text.textName || !text.textContent) {
             return;
         }
         this._post(text);
@@ -114,6 +114,20 @@ class Texts extends React.Component {
 
     handleDelete = (id) => {
         this._delete(id);
+    }
+
+    handleFileChange = (e) => {
+        let reader = new FileReader();
+        reader.onload = () => {
+            let text = reader.result;
+            this.setState({
+                fileContent: text
+            })
+        }
+        reader.readAsText(e.target.files[0], "EUC-KR");
+        this.setState({
+            fileName: e.target.value
+        });
     }
 
     render() {
@@ -155,8 +169,23 @@ class Texts extends React.Component {
                 <Dialog open={this.state.dialog} onClose={this.handleDialogToogle}>
                     <DialogTitle>텍스트 추가</DialogTitle>
                     <DialogContent>
-                    <TextField label="텍스트 이름" type="text" name="textName" value={this.state.textName} onChange={this.handleValueChange} /><br /><br />
+                        <TextField label="텍스트 이름" type="text" name="textName" value={this.state.textName} onChange={this.handleValueChange} /><br /><br />
+                        <input className={classes.hidden} accept="text/plain" id="raised-button-file" type="file" file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange} />
+                        <label htmlFor="raised-button-file">
+                            <Button variant="contained" color="primary" component="span" name="file">
+                                {this.state.fileName === '' ? ".txt 파일 선택" : this.state.fileName}
+                            </Button>
+                        </label>
+                        <TextTruncate
+                            line={1}
+                            truncateText="..."
+                            text={this.state.fileContent}
+                        />
                     </DialogContent>
+                    <DialogActions>
+                        <Button variant="contained" color="primary" onClick={this.handleSubmit}>추가</Button>
+                        <Button variant="outlined" color="primary" onClick={this.handleDialogToogle}>닫기</Button>
+                    </DialogActions>
                 </Dialog>
             </div>
         );
