@@ -43,3 +43,34 @@ def get_tags(text, max_count, min_length):
         # 추출된 단어 빈도수 목록 이용해 WordCloud  객체 초기화
         word_cloud = word_cloud.generate_from_frequencies(tags)
         #워드 클라우드 이미지로 그림
+        fig = plt.figure(figsize=(10, 10))
+        plt.imshow(word_cloud)
+        plt.axis("off")
+        #만들어진 이미지 객체를 파일 형태로 저장
+        fig.savefig("outputs/{0}.png".format(file_name))
+
+        def process_from_text(text, max_count, min_length, words):
+            #최대 max_count개 단어 및 등장 횟수 추출
+            tags = get_tags(text, max_count, min_length)
+            #단어 가중치 적용
+            for n, c in words.items():
+                if n in tags:
+                    tags[n] = tags[n] * int(words[n])
+            # 명사의 출현 빈도 정보 통해 워드 클라우드 이미지 생성
+            make_cloud_image(tags, "output")
+
+            @app.route("/process", methods=['GET', 'POST'])
+            
+        def process():
+            content = request.json
+            words = {}
+            if content['words'] is not None:
+                for data in content['words'].values():
+                    words[data['word']] = data['weight']
+            process_from_text(content['text'], content['maxCount'], content['minLength'], words)
+            result = {'result': True}
+            return jsonify(result)
+
+
+        if __name__ == '__main__':
+            app.run('0.0.0.0', port=5000)
